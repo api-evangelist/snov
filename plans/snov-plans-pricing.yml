@@ -1,0 +1,223 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Snov.io
+providerId: snov
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: false
+tags:
+- Sales Engagement
+- Email Finder
+- Email Verification
+- Prospecting
+- Drip Campaigns
+- Credits
+- Plans
+description: >-
+  Snov.io sells subscription plans that bundle a monthly allotment of credits
+  and, on paid plans, unique recipients for outreach. API usage is metered
+  against the same credit balance: most search, finder, verification, and
+  enrichment calls cost roughly 1 credit per unique result, while balance,
+  domain email count, and sender-account listing calls are free. Plan names and
+  exact credit allotments change over time and should be verified on the
+  Snov.io pricing page before relying on the values below.
+notes: >-
+  Credit allotments and prices are representative of Snov.io's published
+  subscription tiers and are subject to change. Verify current plans, credit
+  counts, and recipient limits on the Snov.io pricing page during
+  reconciliation.
+sources:
+- https://snov.io/pricing
+- https://snov.io/api
+- https://snov.io/knowledgebase/how-to-use-snov-io-api/
+plans:
+- id: snov-trial
+  name: Trial
+  type: free
+  description: >-
+    Free starter access to try email finder and verification, with a small
+    monthly credit allotment. API access is available so integrations can be
+    tested before upgrading.
+  entries:
+  - label: Included Credits
+    name: trial_credits
+    type: quota
+    metric: credits
+    limit: 50
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free
+    userMultiplied: false
+  elements:
+  - name: Email Finder
+  - name: Email Verifier
+  - name: API Access
+- id: snov-starter
+  name: Starter
+  type: subscription
+  description: >-
+    Entry paid subscription with a larger monthly credit allotment and a pool
+    of unique recipients for drip campaigns. Credits are consumed by API
+    search, finder, verification, and enrichment calls.
+  entries:
+  - label: Included Credits
+    name: starter_credits
+    type: quota
+    metric: credits
+    limit: 1000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: monthly subscription (see pricing page)
+    userMultiplied: false
+  - label: Unique Recipients
+    name: starter_recipients
+    type: quota
+    metric: recipients
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included
+    userMultiplied: false
+  elements:
+  - name: Email Finder
+  - name: Email Verifier
+  - name: Domain Search
+  - name: Drip Campaigns
+  - name: Prospect Lists
+  - name: API Access
+- id: snov-pro
+  name: Pro
+  type: subscription
+  description: >-
+    Higher-volume subscription tiers (Pro 5K / 20K / 50K / 100K) that scale the
+    monthly credit allotment and unique recipients for teams running large
+    outreach and enrichment workloads over the API.
+  entries:
+  - label: Included Credits
+    name: pro_credits
+    type: quota
+    metric: credits
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: monthly subscription, scales by tier (see pricing page)
+    userMultiplied: false
+  - label: Unique Recipients
+    name: pro_recipients
+    type: quota
+    metric: recipients
+    limit: 10000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included, scales by tier
+    userMultiplied: false
+  elements:
+  - name: Email Finder
+  - name: Email Verifier
+  - name: Domain Search
+  - name: Drip Campaigns
+  - name: Multichannel Campaigns
+  - name: Email Warm-up
+  - name: CRM
+  - name: API Access
+- id: snov-metered-api
+  name: API Credit Usage
+  type: usage
+  description: >-
+    Per-call credit consumption for API operations, drawn from the plan's
+    monthly credit balance. Representative costs from the API documentation.
+  entries:
+  - label: Email Finder (per email)
+    name: email_finder
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 credit per email found
+    userMultiplied: false
+  - label: Domain Search (per request)
+    name: domain_search
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 credit per unique request
+    userMultiplied: false
+  - label: Domain Prospects (per prospect with email)
+    name: domain_prospects
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 credit per unique request + 1 credit per prospect with email
+    userMultiplied: false
+  - label: Email Verification (per email)
+    name: email_verification
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 credit per verified email
+    userMultiplied: false
+  - label: Profile / LinkedIn Enrichment (per profile)
+    name: enrichment
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 credit per profile (no charge if no data found)
+    userMultiplied: false
+  - label: Balance / Domain Email Count / Sender List
+    name: free_calls
+    type: usage
+    metric: credits
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: free
+    userMultiplied: false
+  elements:
+  - name: Authentication
+  - name: User & Balance
+  - name: Sender Accounts
+- id: snov-enterprise
+  name: Enterprise / Custom
+  type: enterprise
+  description: >-
+    Custom credit volumes, team seats, priority support, and negotiated terms
+    for large organizations. Contact Snov.io sales.
+  entries:
+  - label: Custom Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Custom Credit Volume
+  - name: Team Seats
+  - name: Priority Support
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

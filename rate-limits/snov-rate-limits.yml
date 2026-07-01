@@ -1,0 +1,65 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Snov.io
+providerId: snov
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: true
+tags:
+- Sales Engagement
+- Email Finder
+- Email Verification
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  The Snov.io API is rate limited to 60 requests per minute across all
+  endpoints. Separately, most search, finder, verification, and enrichment
+  operations consume credits from the account's monthly plan balance, so
+  throughput is bounded by both the per-minute request cap and the remaining
+  credit quota. Asynchronous endpoints follow a start/result pattern - a POST
+  to /start returns a task_hash and the GET /result (or webhook) delivers the
+  outcome - which also paces effective usage.
+notes: >-
+  The 60 requests-per-minute limit is documented in the Snov.io API reference.
+  Credit balance limits derive from the active subscription plan; check the
+  balance via GET /v1/get-balance (free) before large batches.
+sources:
+- https://snov.io/api
+- https://snov.io/knowledgebase/how-to-use-snov-io-api/
+- https://snov.io/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: Requests Per Minute
+  scope: account
+  metric: requests
+  limit: 60
+  window: 60s
+  notes: Applies across all API endpoints for the account.
+- name: Emails Per Verification Request
+  scope: request
+  metric: emails
+  limit: 10
+  notes: Up to 10 emails may be submitted in a single /v2/email-verification/start call.
+- name: Prospects Per Finder Request
+  scope: request
+  metric: prospects
+  limit: 10
+  notes: Bulk email finder supports up to 10 prospects per request.
+- name: Credit Balance
+  scope: account
+  metric: credits
+  limit: see plan
+  notes: Metered operations draw from the monthly plan credit allotment; free calls (balance, domain email count, sender list) do not consume credits.
+policies:
+- name: Token Expiry
+  description: OAuth2 access tokens expire after 3600 seconds; clients must refresh via /v1/oauth/access_token.
+- name: Asynchronous Results
+  description: Search and verification use a start/result (task_hash) pattern; poll the /result endpoint or register a webhook_url instead of tight looping.
+- name: Backoff Strategy
+  description: On HTTP 429, back off and retry within the 60 requests-per-minute budget; honor Retry-After when present.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

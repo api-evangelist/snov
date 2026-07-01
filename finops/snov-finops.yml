@@ -1,0 +1,112 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Snov.io
+providerId: snov
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: true
+tags:
+- Sales Engagement
+- Email Finder
+- Email Verification
+- FinOps
+- Cost Management
+- Credits
+- FOCUS
+description: >-
+  FinOps view of Snov.io spend. Snov.io bills a monthly subscription that grants
+  a credit allotment and, on paid plans, a pool of unique recipients. API usage
+  is metered in credits: email finder (per email), domain search (per request),
+  domain prospects (per request plus per prospect with email), email
+  verification (per email), and profile/LinkedIn enrichment (per profile) each
+  draw ~1 credit, while balance checks, domain email counts, and sender-account
+  listing are free. Cost control is primarily about conserving credits and
+  choosing the right subscription tier.
+notes: >-
+  Credit costs are drawn from the Snov.io API documentation and are subject to
+  change; verify against the pricing page and API reference during
+  reconciliation.
+sources:
+- https://snov.io/pricing
+- https://snov.io/api
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Snov.io
+serviceCategory: Sales and Marketing
+billingModel:
+  pricingCategory: Subscription-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+focusColumns:
+  ServiceName: Snov.io
+  ServiceCategory: Sales and Marketing
+  ProviderName: Snov.io
+  PublisherName: Snov.io
+  InvoiceIssuerName: Snov.io
+  BillingCurrency: USD
+  ChargeCategory: Purchase
+  PricingCategory: Subscription-Based
+meters:
+- name: subscription_credits
+  description: Monthly credit allotment granted by the active subscription plan.
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+- name: finder_credits
+  description: Credits consumed finding emails by name and domain (1 per email).
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - account
+  - api
+- name: domain_search_credits
+  description: Credits consumed by domain search and prospect/domain-email/generic-contact tasks.
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - account
+  - api
+- name: verification_credits
+  description: Credits consumed verifying emails (1 per email).
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - account
+  - api
+- name: enrichment_credits
+  description: Credits consumed enriching profiles by email or LinkedIn URL (1 per profile, no charge if no data).
+  unit: credits
+  aggregation: sum
+  dimensions:
+  - account
+  - api
+- name: unique_recipients
+  description: Unique outreach recipients used against the plan's recipient pool.
+  unit: recipients
+  aggregation: sum
+  dimensions:
+  - account
+  - campaign
+principles:
+- name: Visibility
+  description: Poll GET /v1/get-balance (free) to track remaining credits and pace metered calls; watch unique-recipient consumption against the plan pool.
+- name: Allocation
+  description: Tag prospect lists and campaigns per team/workload so credit and recipient burn maps to internal cost centers.
+- name: Optimization
+  description: Use free endpoints (domain email count, sender list) for discovery; batch up to 10 emails per verification and 10 prospects per finder request; skip enrichment when no data is expected since it is not charged.
+- name: Accountability
+  description: Assign owners per campaign and review monthly credit and recipient usage against the subscription tier; upgrade or downgrade tiers based on actual burn.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

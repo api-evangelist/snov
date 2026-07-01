@@ -1,0 +1,247 @@
+aid: snov
+url: https://raw.githubusercontent.com/api-evangelist/snov/refs/heads/main/apis.yml
+name: Snov.io
+kind: company
+description: Snov.io is a sales engagement platform providing email finder, email
+  verification, prospect and list management, multichannel drip campaigns, sender
+  account and warm-up management, and a lightweight sales CRM. Its REST API uses an
+  OAuth2 client_credentials access token and mixes form-encoded v1 endpoints with
+  a v2 asynchronous start/result (task_hash) pattern for search and verification.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Sales Engagement
+- Email Finder
+- Email Verification
+- Prospecting
+- Drip Campaigns
+- CRM
+- Lead Generation
+created: '2026-07-01'
+modified: '2026-07-01'
+specificationVersion: '0.19'
+apis:
+- aid: snov:snov-authentication-api
+  name: Snov.io Authentication API
+  tags:
+  - OAuth2
+  - Access Token
+  - Authentication
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  properties:
+  - url: https://snov.io/api
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Exchanges an API User ID (client_id) and API Secret (client_secret)
+    for a Bearer access token via the OAuth2 client_credentials grant. Tokens are
+    valid for one hour and must be sent on every subsequent request.
+- aid: snov:snov-email-finder-api
+  name: Snov.io Email Finder API
+  tags:
+  - Email Finder
+  - Domain Search
+  - Enrichment
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/email-finder-api
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Finds verified business emails from a prospect first name, last name,
+    and company domain using the asynchronous emails-by-domain-by-name start/result
+    (task_hash) pattern, plus company-domain-by-name lookup.
+- aid: snov:snov-domain-search-api
+  name: Snov.io Domain Search API
+  tags:
+  - Domain Search
+  - Prospects
+  - Company Data
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Returns company information, prospect profiles, domain emails, and generic
+    contacts (sales@, info@) for a given domain via asynchronous start/result tasks,
+    plus a free domain email count endpoint.
+- aid: snov:snov-email-verifier-api
+  name: Snov.io Email Verifier API
+  tags:
+  - Email Verification
+  - Deliverability
+  - SMTP
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/email-verifier
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Verifies up to ten email addresses per request with multistep SMTP,
+    format, disposable, webmail, and gibberish checks, returning valid, not_valid,
+    or unknown status via the start/result (task_hash) pattern.
+- aid: snov:snov-enrichment-api
+  name: Snov.io Enrichment API
+  tags:
+  - Enrichment
+  - Profile Lookup
+  - LinkedIn
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Enriches contacts with full profile data from an email address (v1
+    get-profile-by-email) or from LinkedIn member URLs (v2 li-profiles-by-urls), returning
+    name, position, company, social, and location data.
+- aid: snov:snov-prospects-api
+  name: Snov.io Prospects & Lists API
+  tags:
+  - Prospects
+  - Lists
+  - CRM
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  properties:
+  - url: https://snov.io/api
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Creates and reads prospect lists, adds prospects to a list, and looks
+    up prospects by id or email so contacts can be organized and pushed into drip
+    campaigns.
+- aid: snov:snov-campaigns-api
+  name: Snov.io Drip Campaigns API
+  tags:
+  - Drip Campaigns
+  - Outreach
+  - Analytics
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/email-drip-campaigns
+  baseURL: https://api.snov.io/v1
+  properties:
+  - url: https://snov.io/knowledgebase/email-drip-campaigns/
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Lists a user's campaigns and pulls per-campaign engagement reporting
+    - emails sent, opened, clicked, and replied - for multichannel drip outreach analytics.
+- aid: snov:snov-sender-accounts-api
+  name: Snov.io Sender Accounts API
+  tags:
+  - Sender Accounts
+  - SMTP
+  - Deliverability
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/api
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Connects, updates, lists, and checks the SMTP/IMAP status of email sender
+    accounts used to send campaigns, including daily limits, signatures, and sending
+    delays.
+- aid: snov:snov-warmup-api
+  name: Snov.io Email Warm-up API
+  tags:
+  - Warm-up
+  - Deliverability
+  - Reputation
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v2
+  properties:
+  - url: https://snov.io/api
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Creates, lists, reads, and updates email warm-up campaigns that gradually
+    build sender reputation using progressive or steady strategies with configurable
+    daily goals and reply rates.
+- aid: snov:snov-user-api
+  name: Snov.io User & Balance API
+  tags:
+  - User
+  - Balance
+  - Credits
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  properties:
+  - url: https://snov.io/api
+    type: Documentation
+  - url: openapi/snov-openapi.yml
+    type: OpenAPI
+  - url: collections/snov.postman_collection.json
+    type: PostmanCollection
+  - url: collections/snov.opencollection.json
+    type: OpenCollection
+  description: Reports the account's current credit balance and plan usage for free,
+    letting integrations check remaining credits before running metered search and
+    verification calls.
+common:
+- type: LinkedIn
+  url: https://www.linkedin.com/company/snov-io
+- type: Website
+  url: https://snov.io
+- type: Documentation
+  url: https://snov.io/api
+- type: Plans
+  url: plans/snov-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/snov-rate-limits.yml
+- type: FinOps
+  url: finops/snov-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
