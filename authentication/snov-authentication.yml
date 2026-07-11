@@ -1,0 +1,19 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/snov-openapi.yml
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+schemes:
+- name: OAuth2
+  type: oauth2
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.snov.io/v1/oauth/access_token
+    scopes: 0
+  description: OAuth2 client_credentials flow. POST client_id and client_secret to /v1/oauth/access_token
+    to obtain a Bearer token, then send it in the Authorization header.
+  sources:
+  - openapi/snov-openapi.yml
