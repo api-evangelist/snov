@@ -230,6 +230,10 @@ apis:
     letting integrations check remaining credits before running metered search and
     verification calls.
 common:
+- type: Authentication
+  url: authentication/snov-authentication.yml
+- type: OAuthScopes
+  url: scopes/snov-scopes.yml
 - type: LinkedIn
   url: https://www.linkedin.com/company/snov-io
 - type: Website
@@ -242,6 +246,8 @@ common:
   url: rate-limits/snov-rate-limits.yml
 - type: FinOps
   url: finops/snov-finops.yml
+- url: https://snov.io/blog
+  type: Blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
