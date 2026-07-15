@@ -230,6 +230,8 @@ apis:
     letting integrations check remaining credits before running metered search and
     verification calls.
 common:
+- type: AgenticAccess
+  url: agentic-access/snov-agentic-access.yml
 - type: DomainSecurity
   url: security/snov-domain-security.yml
 - type: Authentication
