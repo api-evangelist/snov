@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Snov.io Authentication Email Finder API
+  description: 'Snov.io sales engagement REST API. Authentication uses the OAuth2 client_credentials grant to exchange an API User ID (client_id) and API Secret (client_secret) for a one-hour Bearer access token. Email finder, domain search, and email verification use an asynchronous pattern: a POST to a `/start` endpoint returns a `task_hash`, then a GET to the matching `/result` endpoint retrieves the outcome. Most request bodies are application/x-www-form-urlencoded; a few v2 endpoints accept JSON. The API is rate limited to 60 requests per minute.'
+  termsOfService: https://snov.io/terms-and-conditions
+  contact:
+    name: Snov.io Support
+    url: https://snov.io/api
+  version: '1.0'
+servers:
+- url: https://api.snov.io
+  description: Snov.io production API
+security:
+- OAuth2: []
+tags:
+- name: Email Finder
+paths:
+  /v2/emails-by-domain-by-name/start:
+    post:
+      operationId: startEmailsByDomainByName
+      tags:
+      - Email Finder
+      summary: Start finding emails by name and domain
+      description: Starts an asynchronous task that finds verified emails for one or more prospects given their first name, last name, and company domain. Returns a task_hash used to retrieve the result. Costs 1 credit per email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - rows
+              properties:
+                rows:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - first_name
+                    - last_name
+                    - domain
+                    properties:
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      domain:
+                        type: string
+                webhook_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/emails-by-domain-by-name/result:
+    get:
+      operationId: getEmailsByDomainByNameResult
+      tags:
+      - Email Finder
+      summary: Get emails-by-name result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Result payload with found emails and statuses.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/company-domain-by-name/start:
+    post:
+      operationId: startCompanyDomainByName
+      tags:
+      - Email Finder
+      summary: Start company domain lookup by name
+      description: Retrieves a company website domain from a business name. Costs 1 credit per domain found.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/company-domain-by-name/result:
+    get:
+      operationId: getCompanyDomainByNameResult
+      tags:
+      - Email Finder
+      summary: Get company domain lookup result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Resolved company domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  schemas:
+    TaskStarted:
+      type: object
+      properties:
+        success:
+          type: boolean
+        task_hash:
+          type: string
+        status:
+          type: string
+          example: in_progress
+  parameters:
+    TaskHashQuery:
+      name: task_hash
+      in: query
+      required: true
+      description: The task hash returned by the matching /start endpoint.
+      schema:
+        type: string
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 client_credentials flow. POST client_id and client_secret to /v1/oauth/access_token to obtain a Bearer token, then send it in the Authorization header.
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.snov.io/v1/oauth/access_token
+          scopes: {}

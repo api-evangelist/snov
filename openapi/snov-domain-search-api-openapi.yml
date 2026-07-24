@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: Snov.io Authentication Domain Search API
+  description: 'Snov.io sales engagement REST API. Authentication uses the OAuth2 client_credentials grant to exchange an API User ID (client_id) and API Secret (client_secret) for a one-hour Bearer access token. Email finder, domain search, and email verification use an asynchronous pattern: a POST to a `/start` endpoint returns a `task_hash`, then a GET to the matching `/result` endpoint retrieves the outcome. Most request bodies are application/x-www-form-urlencoded; a few v2 endpoints accept JSON. The API is rate limited to 60 requests per minute.'
+  termsOfService: https://snov.io/terms-and-conditions
+  contact:
+    name: Snov.io Support
+    url: https://snov.io/api
+  version: '1.0'
+servers:
+- url: https://api.snov.io
+  description: Snov.io production API
+security:
+- OAuth2: []
+tags:
+- name: Domain Search
+paths:
+  /v2/domain-search/start:
+    post:
+      operationId: startDomainSearch
+      tags:
+      - Domain Search
+      summary: Start a domain search
+      description: Starts a company info and prospect search by domain. Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+                webhook_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/result/{task_hash}:
+    get:
+      operationId: getDomainSearchResult
+      tags:
+      - Domain Search
+      summary: Get domain search result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Company information for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/prospects/start:
+    post:
+      operationId: startDomainProspects
+      tags:
+      - Domain Search
+      summary: Start prospect profile search for a domain
+      description: Finds prospect profiles for a domain with optional job position filters. Costs 1 credit per unique request and 1 credit per prospect with email.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+                positions:
+                  type: string
+                  description: Comma-separated job positions to filter by.
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/prospects/result/{task_hash}:
+    get:
+      operationId: getDomainProspectsResult
+      tags:
+      - Domain Search
+      summary: Get domain prospects result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Prospect profiles for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/domain-emails/start:
+    post:
+      operationId: startDomainEmails
+      tags:
+      - Domain Search
+      summary: Start domain emails search
+      description: Searches for unverified email addresses from a company domain. Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/domain-emails/result/{task_hash}:
+    get:
+      operationId: getDomainEmailsResult
+      tags:
+      - Domain Search
+      summary: Get domain emails result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Emails found for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/generic-contacts/start:
+    post:
+      operationId: startGenericContacts
+      tags:
+      - Domain Search
+      summary: Start generic contacts search
+      description: Finds generic company email addresses (orders@, sales@, info@). Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/generic-contacts/result/{task_hash}:
+    get:
+      operationId: getGenericContactsResult
+      tags:
+      - Domain Search
+      summary: Get generic contacts result
+      parameters:
+      - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Generic contacts found for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-domain-emails-count:
+    post:
+      operationId: getDomainEmailsCount
+      tags:
+      - Domain Search
+      summary: Get domain emails count (free)
+      description: Returns the total count of emails available for a domain without consuming credits.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Email count for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  parameters:
+    TaskHashPath:
+      name: task_hash
+      in: path
+      required: true
+      description: The task hash returned by the matching /start endpoint.
+      schema:
+        type: string
+  schemas:
+    TaskStarted:
+      type: object
+      properties:
+        success:
+          type: boolean
+        task_hash:
+          type: string
+        status:
+          type: string
+          example: in_progress
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 client_credentials flow. POST client_id and client_secret to /v1/oauth/access_token to obtain a Bearer token, then send it in the Authorization header.
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.snov.io/v1/oauth/access_token
+          scopes: {}

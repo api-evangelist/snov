@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Snov.io Authentication Campaigns API
+  description: 'Snov.io sales engagement REST API. Authentication uses the OAuth2 client_credentials grant to exchange an API User ID (client_id) and API Secret (client_secret) for a one-hour Bearer access token. Email finder, domain search, and email verification use an asynchronous pattern: a POST to a `/start` endpoint returns a `task_hash`, then a GET to the matching `/result` endpoint retrieves the outcome. Most request bodies are application/x-www-form-urlencoded; a few v2 endpoints accept JSON. The API is rate limited to 60 requests per minute.'
+  termsOfService: https://snov.io/terms-and-conditions
+  contact:
+    name: Snov.io Support
+    url: https://snov.io/api
+  version: '1.0'
+servers:
+- url: https://api.snov.io
+  description: Snov.io production API
+security:
+- OAuth2: []
+tags:
+- name: Campaigns
+paths:
+  /v1/get-user-campaigns:
+    get:
+      operationId: getUserCampaigns
+      tags:
+      - Campaigns
+      summary: List the user's drip campaigns
+      responses:
+        '200':
+          description: The user's campaigns.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+  /v1/get-emails-sent:
+    post:
+      operationId: getEmailsSent
+      tags:
+      - Campaigns
+      summary: Get emails sent for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails sent in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-opened:
+    post:
+      operationId: getEmailsOpened
+      tags:
+      - Campaigns
+      summary: Get emails opened for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails opened in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-clicked:
+    post:
+      operationId: getEmailsClicked
+      tags:
+      - Campaigns
+      summary: Get emails clicked for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails clicked in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-replies:
+    post:
+      operationId: getEmailsReplies
+      tags:
+      - Campaigns
+      summary: Get email replies for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Email replies in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+components:
+  schemas:
+    CampaignReportRequest:
+      type: object
+      required:
+      - campaignId
+      properties:
+        campaignId:
+          type: integer
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: OAuth2 client_credentials flow. POST client_id and client_secret to /v1/oauth/access_token to obtain a Bearer token, then send it in the Authorization header.
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.snov.io/v1/oauth/access_token
+          scopes: {}
