@@ -7,7 +7,20 @@ description: Snov.io is a sales engagement platform providing email finder, emai
   account and warm-up management, and a lightweight sales CRM. Its REST API uses an
   OAuth2 client_credentials access token and mixes form-encoded v1 endpoints with
   a v2 asynchronous start/result (task_hash) pattern for search and verification.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: paid
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Paid · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/snov.png
 tags:
 - Sales Engagement
 - Email Finder
@@ -22,213 +35,264 @@ specificationVersion: '0.19'
 apis:
 - aid: snov:snov-authentication-api
   name: Snov.io Authentication API
-  tags:
-  - OAuth2
-  - Access Token
-  - Authentication
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: The Authentication API from Snov.io — 1 operation(s) for authentication.
   humanURL: https://snov.io/api
   baseURL: https://api.snov.io/v1
-  properties:
-  - url: https://snov.io/api
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Exchanges an API User ID (client_id) and API Secret (client_secret)
-    for a Bearer access token via the OAuth2 client_credentials grant. Tokens are
-    valid for one hour and must be sent on every subsequent request.
-- aid: snov:snov-email-finder-api
-  name: Snov.io Email Finder API
   tags:
-  - Email Finder
-  - Domain Search
-  - Enrichment
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/email-finder-api
-  baseURL: https://api.snov.io/v2
+  - Authentication
   properties:
-  - url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Finds verified business emails from a prospect first name, last name,
-    and company domain using the asynchronous emails-by-domain-by-name start/result
-    (task_hash) pattern, plus company-domain-by-name lookup.
+  - type: OpenAPI
+    url: openapi/snov-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
+- aid: snov:snov-campaigns-api
+  name: Snov.io Campaigns API
+  description: The Campaigns API from Snov.io — 5 operation(s) for campaigns.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  tags:
+  - Campaigns
+  properties:
+  - type: OpenAPI
+    url: openapi/snov-campaigns-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 - aid: snov:snov-domain-search-api
   name: Snov.io Domain Search API
+  description: The Domain Search API from Snov.io — 9 operation(s) for domain search.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
   tags:
   - Domain Search
-  - Prospects
-  - Company Data
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/knowledgebase/how-to-use-domain-search-api/
-  baseURL: https://api.snov.io/v2
   properties:
-  - url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Returns company information, prospect profiles, domain emails, and generic
-    contacts (sales@, info@) for a given domain via asynchronous start/result tasks,
-    plus a free domain email count endpoint.
+  - type: OpenAPI
+    url: openapi/snov-domain-search-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
+- aid: snov:snov-email-finder-api
+  name: Snov.io Email Finder API
+  description: The Email Finder API from Snov.io — 4 operation(s) for email finder.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  tags:
+  - Email Finder
+  properties:
+  - type: OpenAPI
+    url: openapi/snov-email-finder-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 - aid: snov:snov-email-verifier-api
   name: Snov.io Email Verifier API
+  description: The Email Verifier API from Snov.io — 2 operation(s) for email verifier.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
   tags:
-  - Email Verification
-  - Deliverability
-  - SMTP
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/email-verifier
-  baseURL: https://api.snov.io/v2
+  - Email Verifier
   properties:
-  - url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Verifies up to ten email addresses per request with multistep SMTP,
-    format, disposable, webmail, and gibberish checks, returning valid, not_valid,
-    or unknown status via the start/result (task_hash) pattern.
+  - type: OpenAPI
+    url: openapi/snov-email-verifier-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 - aid: snov:snov-enrichment-api
   name: Snov.io Enrichment API
+  description: The Enrichment API from Snov.io — 3 operation(s) for enrichment.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
   tags:
   - Enrichment
-  - Profile Lookup
-  - LinkedIn
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
-  baseURL: https://api.snov.io/v2
   properties:
-  - url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Enriches contacts with full profile data from an email address (v1
-    get-profile-by-email) or from LinkedIn member URLs (v2 li-profiles-by-urls), returning
-    name, position, company, social, and location data.
+  - type: OpenAPI
+    url: openapi/snov-enrichment-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 - aid: snov:snov-prospects-api
-  name: Snov.io Prospects & Lists API
+  name: Snov.io Prospects API
+  description: The Prospects API from Snov.io — 4 operation(s) for prospects.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
   tags:
   - Prospects
-  - Lists
-  - CRM
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/api
-  baseURL: https://api.snov.io/v1
   properties:
-  - url: https://snov.io/api
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Creates and reads prospect lists, adds prospects to a list, and looks
-    up prospects by id or email so contacts can be organized and pushed into drip
-    campaigns.
-- aid: snov:snov-campaigns-api
-  name: Snov.io Drip Campaigns API
-  tags:
-  - Drip Campaigns
-  - Outreach
-  - Analytics
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/email-drip-campaigns
-  baseURL: https://api.snov.io/v1
-  properties:
-  - url: https://snov.io/knowledgebase/email-drip-campaigns/
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Lists a user's campaigns and pulls per-campaign engagement reporting
-    - emails sent, opened, clicked, and replied - for multichannel drip outreach analytics.
+  - type: OpenAPI
+    url: openapi/snov-prospects-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 - aid: snov:snov-sender-accounts-api
   name: Snov.io Sender Accounts API
-  tags:
-  - Sender Accounts
-  - SMTP
-  - Deliverability
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/api
-  baseURL: https://api.snov.io/v2
-  properties:
-  - url: https://snov.io/api
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Connects, updates, lists, and checks the SMTP/IMAP status of email sender
-    accounts used to send campaigns, including daily limits, signatures, and sending
-    delays.
-- aid: snov:snov-warmup-api
-  name: Snov.io Email Warm-up API
-  tags:
-  - Warm-up
-  - Deliverability
-  - Reputation
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://snov.io/api
-  baseURL: https://api.snov.io/v2
-  properties:
-  - url: https://snov.io/api
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Creates, lists, reads, and updates email warm-up campaigns that gradually
-    build sender reputation using progressive or steady strategies with configurable
-    daily goals and reply rates.
-- aid: snov:snov-user-api
-  name: Snov.io User & Balance API
-  tags:
-  - User
-  - Balance
-  - Credits
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: The Sender Accounts API from Snov.io — 3 operation(s) for sender accounts.
   humanURL: https://snov.io/api
   baseURL: https://api.snov.io/v1
+  tags:
+  - Sender Accounts
   properties:
-  - url: https://snov.io/api
-    type: Documentation
-  - url: openapi/snov-openapi.yml
-    type: OpenAPI
-  - url: collections/snov.postman_collection.json
-    type: PostmanCollection
-  - url: collections/snov.opencollection.json
-    type: OpenCollection
-  description: Reports the account's current credit balance and plan usage for free,
-    letting integrations check remaining credits before running metered search and
-    verification calls.
+  - type: OpenAPI
+    url: openapi/snov-sender-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
+- aid: snov:snov-user-api
+  name: Snov.io User API
+  description: The User API from Snov.io — 1 operation(s) for user.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  tags:
+  - User
+  properties:
+  - type: OpenAPI
+    url: openapi/snov-user-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
+- aid: snov:snov-warm-up-api
+  name: Snov.io Warm-up API
+  description: The Warm-up API from Snov.io — 2 operation(s) for warm-up.
+  humanURL: https://snov.io/api
+  baseURL: https://api.snov.io/v1
+  tags:
+  - Warm-up
+  properties:
+  - type: OpenAPI
+    url: openapi/snov-warm-up-api-openapi.yml
+  - type: Documentation
+    url: https://snov.io/api
+  - type: PostmanCollection
+    url: collections/snov.postman_collection.json
+  - type: OpenCollection
+    url: collections/snov.opencollection.json
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-get-email-contacts-from-a-list-of-names/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-domain-search-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-use-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/how-to-enrich-your-data-via-snov-io-api/
+  - type: Documentation
+    url: https://snov.io/knowledgebase/email-drip-campaigns/
 common:
 - type: AgenticAccess
   url: agentic-access/snov-agentic-access.yml
