@@ -1,0 +1,32 @@
+{
+  "provider": "snov",
+  "sources": [
+    "snov-authentication-api-openapi.yml",
+    "snov-campaigns-api-openapi.yml",
+    "snov-domain-search-api-openapi.yml",
+    "snov-email-finder-api-openapi.yml",
+    "snov-email-verifier-api-openapi.yml",
+    "snov-enrichment-api-openapi.yml",
+    "snov-prospects-api-openapi.yml",
+    "snov-sender-accounts-api-openapi.yml",
+    "snov-user-api-openapi.yml",
+    "snov-warm-up-api-openapi.yml"
+  ],
+  "outputs": [
+    "snov-authentication-api-openapi.yml",
+    "snov-campaigns-api-openapi.yml",
+    "snov-domain-search-api-openapi.yml",
+    "snov-email-finder-api-openapi.yml",
+    "snov-email-verifier-api-openapi.yml",
+    "snov-enrichment-api-openapi.yml",
+    "snov-prospects-api-openapi.yml",
+    "snov-sender-accounts-api-openapi.yml",
+    "snov-user-api-openapi.yml",
+    "snov-warm-up-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

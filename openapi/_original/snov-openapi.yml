@@ -1,0 +1,1033 @@
+openapi: 3.0.3
+info:
+  title: Snov.io API
+  description: >-
+    Snov.io sales engagement REST API. Authentication uses the OAuth2
+    client_credentials grant to exchange an API User ID (client_id) and API
+    Secret (client_secret) for a one-hour Bearer access token. Email finder,
+    domain search, and email verification use an asynchronous pattern: a POST
+    to a `/start` endpoint returns a `task_hash`, then a GET to the matching
+    `/result` endpoint retrieves the outcome. Most request bodies are
+    application/x-www-form-urlencoded; a few v2 endpoints accept JSON. The API
+    is rate limited to 60 requests per minute.
+  termsOfService: https://snov.io/terms-and-conditions
+  contact:
+    name: Snov.io Support
+    url: https://snov.io/api
+  version: '1.0'
+servers:
+  - url: https://api.snov.io
+    description: Snov.io production API
+tags:
+  - name: Authentication
+  - name: Email Finder
+  - name: Domain Search
+  - name: Email Verifier
+  - name: Enrichment
+  - name: Prospects
+  - name: Campaigns
+  - name: Sender Accounts
+  - name: Warm-up
+  - name: User
+security:
+  - OAuth2: []
+paths:
+  /v1/oauth/access_token:
+    post:
+      operationId: getAccessToken
+      tags:
+        - Authentication
+      summary: Get an OAuth2 access token
+      description: >-
+        Exchanges client_id (API User ID) and client_secret (API Secret) for a
+        Bearer access token using the client_credentials grant. The token is
+        valid for 3600 seconds.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - grant_type
+                - client_id
+                - client_secret
+              properties:
+                grant_type:
+                  type: string
+                  enum:
+                    - client_credentials
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+      responses:
+        '200':
+          description: Access token issued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccessToken'
+  /v2/emails-by-domain-by-name/start:
+    post:
+      operationId: startEmailsByDomainByName
+      tags:
+        - Email Finder
+      summary: Start finding emails by name and domain
+      description: >-
+        Starts an asynchronous task that finds verified emails for one or more
+        prospects given their first name, last name, and company domain. Returns
+        a task_hash used to retrieve the result. Costs 1 credit per email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rows
+              properties:
+                rows:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - first_name
+                      - last_name
+                      - domain
+                    properties:
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      domain:
+                        type: string
+                webhook_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/emails-by-domain-by-name/result:
+    get:
+      operationId: getEmailsByDomainByNameResult
+      tags:
+        - Email Finder
+      summary: Get emails-by-name result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Result payload with found emails and statuses.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/company-domain-by-name/start:
+    post:
+      operationId: startCompanyDomainByName
+      tags:
+        - Email Finder
+      summary: Start company domain lookup by name
+      description: Retrieves a company website domain from a business name. Costs 1 credit per domain found.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/company-domain-by-name/result:
+    get:
+      operationId: getCompanyDomainByNameResult
+      tags:
+        - Email Finder
+      summary: Get company domain lookup result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Resolved company domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/start:
+    post:
+      operationId: startDomainSearch
+      tags:
+        - Domain Search
+      summary: Start a domain search
+      description: Starts a company info and prospect search by domain. Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+                webhook_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/result/{task_hash}:
+    get:
+      operationId: getDomainSearchResult
+      tags:
+        - Domain Search
+      summary: Get domain search result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Company information for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/prospects/start:
+    post:
+      operationId: startDomainProspects
+      tags:
+        - Domain Search
+      summary: Start prospect profile search for a domain
+      description: >-
+        Finds prospect profiles for a domain with optional job position filters.
+        Costs 1 credit per unique request and 1 credit per prospect with email.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+                positions:
+                  type: string
+                  description: Comma-separated job positions to filter by.
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/prospects/result/{task_hash}:
+    get:
+      operationId: getDomainProspectsResult
+      tags:
+        - Domain Search
+      summary: Get domain prospects result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Prospect profiles for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/domain-emails/start:
+    post:
+      operationId: startDomainEmails
+      tags:
+        - Domain Search
+      summary: Start domain emails search
+      description: Searches for unverified email addresses from a company domain. Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/domain-emails/result/{task_hash}:
+    get:
+      operationId: getDomainEmailsResult
+      tags:
+        - Domain Search
+      summary: Get domain emails result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Emails found for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/domain-search/generic-contacts/start:
+    post:
+      operationId: startGenericContacts
+      tags:
+        - Domain Search
+      summary: Start generic contacts search
+      description: Finds generic company email addresses (orders@, sales@, info@). Costs 1 credit per unique request.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/domain-search/generic-contacts/result/{task_hash}:
+    get:
+      operationId: getGenericContactsResult
+      tags:
+        - Domain Search
+      summary: Get generic contacts result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashPath'
+      responses:
+        '200':
+          description: Generic contacts found for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-domain-emails-count:
+    post:
+      operationId: getDomainEmailsCount
+      tags:
+        - Domain Search
+      summary: Get domain emails count (free)
+      description: Returns the total count of emails available for a domain without consuming credits.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - domain
+              properties:
+                domain:
+                  type: string
+      responses:
+        '200':
+          description: Email count for the domain.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/email-verification/start:
+    post:
+      operationId: startEmailVerification
+      tags:
+        - Email Verifier
+      summary: Start email verification
+      description: >-
+        Starts verification for up to ten email addresses at once. Each email is
+        added as a separate parameter. Supports an optional webhook_url for async
+        delivery of results.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - emails
+              properties:
+                emails:
+                  type: array
+                  maxItems: 10
+                  items:
+                    type: string
+                    format: email
+                webhook_url:
+                  type: string
+                  format: uri
+      responses:
+        '200':
+          description: Verification task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/email-verification/result:
+    get:
+      operationId: getEmailVerificationResult
+      tags:
+        - Email Verifier
+      summary: Get email verification result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Verification results with SMTP and quality signals.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailVerificationResult'
+  /v1/get-profile-by-email:
+    post:
+      operationId: getProfileByEmail
+      tags:
+        - Enrichment
+      summary: Get profile by email
+      description: Retrieves comprehensive profile data connected to an email address. Costs 1 credit per request (no charge if no data is found).
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Profile data for the email.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/li-profiles-by-urls/start:
+    post:
+      operationId: startLiProfilesByUrls
+      tags:
+        - Enrichment
+      summary: Start LinkedIn profile enrichment
+      description: Extracts complete profile information from LinkedIn member URLs. Costs 1 credit per prospect profile.
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - urls
+              properties:
+                urls:
+                  type: array
+                  items:
+                    type: string
+                    format: uri
+      responses:
+        '200':
+          description: Task started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStarted'
+  /v2/li-profiles-by-urls/result:
+    get:
+      operationId: getLiProfilesByUrlsResult
+      tags:
+        - Enrichment
+      summary: Get LinkedIn profile enrichment result
+      parameters:
+        - $ref: '#/components/parameters/TaskHashQuery'
+      responses:
+        '200':
+          description: Enriched LinkedIn profiles.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-user-lists:
+    get:
+      operationId: getUserLists
+      tags:
+        - Prospects
+      summary: List the user's prospect lists
+      responses:
+        '200':
+          description: The user's prospect lists.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+  /v1/lists:
+    post:
+      operationId: createList
+      tags:
+        - Prospects
+      summary: Create a new prospect list
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: The created list.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/prospect-list:
+    post:
+      operationId: getProspectList
+      tags:
+        - Prospects
+      summary: View prospects in a list
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - listId
+              properties:
+                listId:
+                  type: integer
+                page:
+                  type: integer
+                perPage:
+                  type: integer
+      responses:
+        '200':
+          description: Prospects contained in the list.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/add-prospect-to-list:
+    post:
+      operationId: addProspectToList
+      tags:
+        - Prospects
+      summary: Add a prospect to a list
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - email
+                - listId
+              properties:
+                email:
+                  type: string
+                  format: email
+                fullName:
+                  type: string
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                position:
+                  type: string
+                companyName:
+                  type: string
+                listId:
+                  type: integer
+      responses:
+        '200':
+          description: The prospect added to the list.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-user-campaigns:
+    get:
+      operationId: getUserCampaigns
+      tags:
+        - Campaigns
+      summary: List the user's drip campaigns
+      responses:
+        '200':
+          description: The user's campaigns.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+  /v1/get-emails-sent:
+    post:
+      operationId: getEmailsSent
+      tags:
+        - Campaigns
+      summary: Get emails sent for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails sent in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-opened:
+    post:
+      operationId: getEmailsOpened
+      tags:
+        - Campaigns
+      summary: Get emails opened for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails opened in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-clicked:
+    post:
+      operationId: getEmailsClicked
+      tags:
+        - Campaigns
+      summary: Get emails clicked for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Emails clicked in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-emails-replies:
+    post:
+      operationId: getEmailsReplies
+      tags:
+        - Campaigns
+      summary: Get email replies for a campaign
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CampaignReportRequest'
+      responses:
+        '200':
+          description: Email replies in the campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/sender-accounts/emails:
+    get:
+      operationId: listSenderAccounts
+      tags:
+        - Sender Accounts
+      summary: List connected email sender accounts (free)
+      responses:
+        '200':
+          description: Connected sender accounts in the workspace.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+    post:
+      operationId: createSenderAccount
+      tags:
+        - Sender Accounts
+      summary: Connect a new email sender account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sender_name
+                - email_from
+                - password
+                - smtp_host
+                - smtp_port
+              properties:
+                sender_name:
+                  type: string
+                email_from:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                smtp_host:
+                  type: string
+                smtp_port:
+                  type: integer
+                smtp_encryption:
+                  type: string
+                  enum:
+                    - none
+                    - ssl
+                    - tls
+                imap_host:
+                  type: string
+                imap_port:
+                  type: integer
+                reply_to:
+                  type: string
+                daily_limitation:
+                  type: integer
+                signature:
+                  type: string
+      responses:
+        '200':
+          description: The created sender account.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/sender-accounts/emails/{id}:
+    patch:
+      operationId: updateSenderAccount
+      tags:
+        - Sender Accounts
+      summary: Update a sender account
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The updated sender account.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/sender-accounts/check-sender-status:
+    get:
+      operationId: checkSenderStatus
+      tags:
+        - Sender Accounts
+      summary: Check SMTP/IMAP status of a sender account
+      parameters:
+        - name: sender_account_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Connection validity and any errors.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/warm-up:
+    get:
+      operationId: listWarmUpCampaigns
+      tags:
+        - Warm-up
+      summary: List warm-up campaigns
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated warm-up campaigns.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    post:
+      operationId: createWarmUpCampaign
+      tags:
+        - Warm-up
+      summary: Create a warm-up campaign
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - sender_account_id
+                - strategy
+              properties:
+                sender_account_id:
+                  type: integer
+                strategy:
+                  type: string
+                  enum:
+                    - progressive
+                    - steady
+                daily_goal:
+                  type: integer
+                reply_rate:
+                  type: number
+                deadline:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: The created warm-up campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v2/warm-up/{id}:
+    get:
+      operationId: getWarmUpCampaign
+      tags:
+        - Warm-up
+      summary: Get warm-up campaign details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Warm-up campaign configuration and statistics.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+    patch:
+      operationId: updateWarmUpCampaign
+      tags:
+        - Warm-up
+      summary: Update a warm-up campaign
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The updated warm-up campaign.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+  /v1/get-balance:
+    get:
+      operationId: getBalance
+      tags:
+        - User
+      summary: Check the account credit balance (free)
+      description: Returns the current credit balance and plan usage for the API account.
+      responses:
+        '200':
+          description: The account balance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+components:
+  parameters:
+    TaskHashQuery:
+      name: task_hash
+      in: query
+      required: true
+      description: The task hash returned by the matching /start endpoint.
+      schema:
+        type: string
+    TaskHashPath:
+      name: task_hash
+      in: path
+      required: true
+      description: The task hash returned by the matching /start endpoint.
+      schema:
+        type: string
+  schemas:
+    AccessToken:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: Bearer
+        expires_in:
+          type: integer
+          example: 3600
+    TaskStarted:
+      type: object
+      properties:
+        success:
+          type: boolean
+        task_hash:
+          type: string
+        status:
+          type: string
+          example: in_progress
+    CampaignReportRequest:
+      type: object
+      required:
+        - campaignId
+      properties:
+        campaignId:
+          type: integer
+    EmailVerificationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              smtp_status:
+                type: string
+                enum:
+                  - valid
+                  - not_valid
+                  - unknown
+              is_valid_format:
+                type: boolean
+              is_disposable:
+                type: boolean
+              is_webmail:
+                type: boolean
+              is_gibberish:
+                type: boolean
+    Balance:
+      type: object
+      properties:
+        success:
+          type: boolean
+        balance:
+          type: string
+          description: Remaining credits on the account.
+        teamwork:
+          type: boolean
+        limit_hourly:
+          type: integer
+        used_hourly:
+          type: integer
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      description: >-
+        OAuth2 client_credentials flow. POST client_id and client_secret to
+        /v1/oauth/access_token to obtain a Bearer token, then send it in the
+        Authorization header.
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.snov.io/v1/oauth/access_token
+          scopes: {}
