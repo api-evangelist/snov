@@ -1,3 +1,14 @@
+# RETIRED: merged into api-evangelist/snov-io
+
+This repository was a duplicate profile of Snov.io (snov.io). It was retired on 2026-08-09 and merged into **[api-evangelist/snov-io](https://github.com/api-evangelist/snov-io)**, which is the maintained profile. Its artifacts were ported there first.
+
+- apis.io: https://apis.io/providers/snov-io/ (old /providers/snov/ URLs redirect there)
+- Corrections: open an issue on api-evangelist/snov-io.
+
+This repository is archived and read-only.
+
+---
+
 # Snov.io (snov)
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
